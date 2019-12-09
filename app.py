@@ -11,7 +11,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "ap
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-class toDos(db.Model):
+
+
+class Todo(db.Model):
     __tablename__ = "todos"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -21,66 +23,59 @@ class toDos(db.Model):
         self.title = title
         self.done = done
 
-class ToDoSchema(ma.Schema):
+class TodoSchema(ma.Schema):
     class Meta:
         fields = ("id", "title", "done")
 
-todo_schema = PowerRangersSchema()
-todo_schema = PowerRangersSchema = TodoSchema(many=True)
+todo_schema = TodoSchema()
+todos_schema = TodoSchema(many=True)
 
 # CRUD
 # GET
-@app.route("/todo", methods=["GET"])
-def get_powerRangers():
-    all_powerRangers = PowerRanger.query.all()
-    result = powerRangers_schema.dump(all_todos)
-    return jsonify(result.data)
+@app.route("/todos", methods=["GET"])
+def get_todos():
+    all_todos = Todo.query.all()
+    result = todos_schema.dump(all_todos)
+    return jsonify(result)
 
+# GET by ID
 # POST
-@app.route("/powerRangers", methods=["POST"])
+@app.route("/todo", methods=["POST"])
 def add_todo():
     title = request.json["title"]
     done = request.json["done"]
 
-    new_PowerRanger = Todo(title, done)
+    new_todo = Todo(title, done)
 
     db.session.add(new_todo)
     db.session.commit()
-
-    powerRangers = PowerRangers.query.get(new_todo.id)
-    return powerRangers_schema.jsonify(todo)
-
-# PUT/PATCH
-@app.route("/powerRanger/<id>", methods=["PUT"])
-def update_powerRangers(id):
-  powerRangers = PowerRangers.query.get(id)
-  
-  new_title = request.json["title"]
-  new_done = request.json["done"]
-
-  powerRangers.title = new_title
-  powerRangers.done = new_done
-
-  db.session.commit()
-  return powerRangers_schema.jsonify(todo)
+    
+    # Query to return
+    todo = Todo.query.get(new_todo.id)
+    return todo_schema.jsonify(todo)
 
 # PUT/PATCH by ID
+@app.route("/todo/<id>", methods=["PATCH"])
+def update_todo(id):
+    todo = Todo.query.get(id)
+
+    new_done = request.json["done"]
+
+    todo.done = new_done
+
+    db.session.commit()
+    return todo_schema.jsonify(todo)
 
 # DELETE
-@app.route("/powerRanger/<id>", methods=["DELETE"])
-def delete_powerRanger(id):
-    record = PowerRangers.query.get(id)
-    db.session.delete(record)
+@app.route("/todo/<id>", methods=["DELETE"])
+def delete_todo(id):
+    todo = Todo.query.get(id)
+    db.session.delete(todo)
     db.session.commit()
+    return  jsonify("Removed record")
 
-    return jsonify("RECORD DELETED!")
 
 
 if __name__ == "__main__":
     app.debug = True
-    app.run()      
-
-
-if __name__ == "__main__":
-    app.debug =True
     app.run()
