@@ -1,0 +1,95 @@
+db.createUser({
+  user: 'Preston',
+  pwd: 'Darkmatter1!',
+  customData: { startDate: new Date() },
+  roles: [
+    { role: 'clusterAdmin', db: 'admin' },
+    { role: 'readAnyDatabase', db: 'admin' },
+    'readWrite'
+  ]
+})
+
+db.getUsers()
+db.dropUser('jon')
+
+db.books.insert({
+    "name": "OOP Programming", 
+    "PublishedDate": new Date(),
+    "authers": [
+        { "name": "Jon Snow" },
+        { "name": "Ned Stark" },
+    ]
+})
+
+#----------------------HOMEWORK--------------------------
+
+db.books.insertMany([
+    {
+        "name": "Confident Ruby", 
+        "publishedDate": new Date(),
+        "authers": [
+            {"name": "Avdi Grimm" }
+        ]
+    }
+])
+|
+|
+|
+{
+        "acknowledged" : true,
+        "insertedIds" : [
+                ObjectId("5ddda121e2d28f64af77e01a")
+        ]
+}
+
+---------------------------------------------------------
+
+db.books.find(
+    {
+        name: "Confident Ruby
+    },
+    {
+        _id: 0
+        name: 1
+        authors: 1
+    }
+).pretty()
+
+SELECT name, authors FROM books WHERE name = 'Confident Ruby'
+
+------------------------------------------------------------
+
+db.books.insert({
+    "name": "Deep Work: Rules for Focused Success in a Distracted World",
+    "publishedDate": new Date(),
+    "authors": [
+        {"name": "Cal Newport"}
+    ]
+});
+
+-------------------------------------------------------------
+
+db.books.insert({
+    "name": "Blink",
+    "publishedDate": new Date(),
+    "authors": [
+        { "name": "Malcolm Gladwell", "active": "true" },
+        { "name": "Ghost Writer", "active": "true" }
+    ]
+});
+
+--------------------------------------------------------------
+
+db.books.insert( 
+  {
+    "name": "Deep Work: Rules for Focused Success in a Distracted World",
+    "publishedDate": new Date(),
+    "reviews": 100,
+    "authors": [
+      {"name": "Cal Newport"}
+    ]
+  }
+)
+
+----------------------------------------------------------------
+
